@@ -69,12 +69,11 @@ By training on massive datasets for weeks, the model will learn to precisely map
 ### Sequence & Features Analysis
 ![Features](assets/screenshot_4.png)
 
-### Explainability & Distance Maps
 ![Distance Maps](assets/screenshot_5.png)
 
-### Variant & Mutation Lab
+### Explainability & Distance Maps
 ![Mutation Lab](assets/screenshot_6.png)
 
-### Custom PDB Folding
+### Variant & Mutation Lab
 ![Folding Engine](assets/screenshot_7.png)
 
