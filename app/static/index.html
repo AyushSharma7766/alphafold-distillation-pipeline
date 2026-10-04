@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CIROP - Ciliated left-right organizer metallopeptidase | Mini-AlphaFold UniProtKB</title>
+  <link rel="stylesheet" href="/static/style.css">
+  <link rel="stylesheet" href="/static/pdbe-molstar.css">
+  <script src="/static/pdbe-molstar-plugin.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/3Dmol/2.4.2/3Dmol-min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+  <!-- 1. UniProt Top Navigation Bar -->
+  <header class="uniprot-topbar">
+    <div class="uniprot-brand">
+      <div class="uniprot-logo-badge">
+        UniProtKB <span>Mini-AlphaFold</span>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <div class="hw-pill">
+        <div class="hw-dot"></div>
+        <span id="hw-info">NVIDIA RTX 2050 (4.00 GB) | 1.42M Params</span>
+      </div>
+      <button class="theme-toggle-btn" id="btn-theme-toggle">Theme: UniProt Light</button>
+    </div>
+  </header>
+
+  <!-- 2. UniProt Entry Header Banner -->
+  <div class="entry-banner">
+    <div class="breadcrumb">
+      <span>UniProtKB</span> / <span id="entry-acc-breadcrumb">A0A1B0GTW7</span> (<span id="entry-id-breadcrumb">CIROP_HUMAN</span>)
+    </div>
+    <div class="entry-title-row">
+      <h1 class="entry-accession" id="entry-acc">A0A1B0GTW7</h1>
+      <span class="entry-protein-name" id="entry-name">CIROP - Ciliated left-right organizer metallopeptidase</span>
+    </div>
+    <div class="entry-meta-row">
+      <span class="meta-tag reviewed">Reviewed (Swiss-Prot)</span>
+      <span class="meta-tag" id="entry-model-tag">Mini-AlphaFold 3D Model</span>
+      <span><strong>Organism:</strong> <em id="entry-organism">Homo sapiens (Human)</em></span>
+      <span><strong>Gene:</strong> <span id="entry-gene">CIROP</span></span>
+      <span><strong>Length:</strong> <span id="entry-length">60</span> amino acids</span>
+    </div>
+
+    <!-- UniProt Navigation Tabs -->
+    <nav class="uniprot-tabs">
+      <button class="uniprot-tab-btn active" data-tab="tab-structure">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+        Structure (3D AlphaFold)
+      </button>
+      <button class="uniprot-tab-btn" data-tab="tab-sequence">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+        Sequence & Features
+      </button>
+      <button class="uniprot-tab-btn" data-tab="tab-explain">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+        Explainability & Distance Maps
+      </button>
+      <button class="uniprot-tab-btn" data-tab="tab-mutation">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        Variant & Mutation Lab
+      </button>
+      <button class="uniprot-tab-btn" data-tab="tab-aminoacids">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 12h8"/><path d="M12 8v8"/></svg>
+        20 Amino Acids (3D Explorer)
+      </button>
+    </nav>
+  </div>
+
+  <!-- Page Content Container -->
+  <div class="page-container">
+
+    <!-- TAB 1: Structure (3D AlphaFold) -->
+    <div id="tab-structure" class="tab-pane active">
+      <div class="structure-layout">
+        
+        <!-- Left: 3D Structure Viewer Card (UniProt Mol* Style) -->
+        <div>
+          <div class="viewer-card">
+            <!-- Viewer Toolbar -->
+            <div class="viewer-controls-overlay">
+              <div class="model-view-switch" id="model-view-switch">
+                <button class="mode-switch-btn active" id="btn-show-predicted" title="View Mini-AlphaFold AI predicted 3D fold">
+                  <span class="mode-dot dot-pred"></span> Model Predicted 3D
+                </button>
+                <button class="mode-switch-btn" id="btn-show-experimental" title="Compare with Experimental / Ground Truth PDB">
+                  <span class="mode-dot dot-exp"></span> Experimental PDB
+                </button>
+              </div>
+              <div class="rmsd-pill" id="rmsd-badge" style="display: none;" title="Kabsch CA-RMSD alignment to experimental structure">
+                CA-RMSD: <span id="rmsd-val">--</span> Å
+              </div>
+              <div class="viewer-controls-divider"></div>
+              <button class="ctrl-btn active" id="btn-color-plddt">pLDDT Confidence</button>
+              <button class="ctrl-btn" id="btn-color-ss">Secondary Structure</button>
+              <button class="ctrl-btn" id="btn-color-rainbow">Rainbow (N-C)</button>
+              <button class="ctrl-btn" id="btn-spin-3d">Spin</button>
+              <button class="ctrl-btn" id="btn-reset-cam">Reset View</button>
+              <button class="ctrl-btn" id="btn-download-pdb">Download PDB</button>
+            </div>
+
+            <!-- Floating Hover Tooltip (Follows Cursor) -->
+            <div class="residue-hover-tooltip" id="hover-tooltip">
+              <div class="tooltip-title" id="tt-residue">Val 8 (VAL)</div>
+              <div class="tooltip-row"><span>Position:</span> <span class="tooltip-val" id="tt-pos">8 / 60</span></div>
+              <div class="tooltip-row"><span>Structure:</span> <span class="tooltip-val" id="tt-ss">Alpha Helix</span></div>
+              <div class="tooltip-row"><span>Confidence (pLDDT):</span> <span class="tooltip-val" id="tt-plddt">88.5</span></div>
+              <div class="tooltip-row"><span>Coordinates:</span> <span class="tooltip-val" id="tt-coords">(0.15, -8.28, 0.11)</span></div>
+            </div>
+
+            <!-- 3D Canvas (Clean White Background) -->
+            <div class="canvas-3d-wrapper">
+              <div id="viewport-3d"></div>
+
+              <!-- 3D Orientation Axes Cube Widget (Bottom-Left, matching Images 1-4) -->
+              <div class="axis-widget" id="axis-widget">
+                <svg width="48" height="48" viewBox="0 0 48 48">
+                  <!-- Isometric Origin Cube -->
+                  <polygon points="14,30 20,26 20,34 14,38" fill="#94a3b8" />
+                  <polygon points="20,26 27,28 27,36 20,34" fill="#64748b" />
+                  <polygon points="14,30 21,32 27,28 20,26" fill="#cbd5e1" />
+                  <!-- Green Y-axis (up) -->
+                  <line x1="14" y1="30" x2="14" y2="6" stroke="#22c55e" stroke-width="3.5" stroke-linecap="round" />
+                  <!-- Red X-axis (right) -->
+                  <line x1="27" y1="36" x2="44" y2="36" stroke="#ef4444" stroke-width="3.5" stroke-linecap="round" />
+                  <!-- Blue/Purple Z-axis (front) -->
+                  <line x1="14" y1="38" x2="4" y2="44" stroke="#3b82f6" stroke-width="3.5" stroke-linecap="round" />
+                  <line x1="4" y1="44" x2="1" y2="45" stroke="#ec4899" stroke-width="3.5" stroke-linecap="round" />
+                </svg>
+              </div>
+
+              <!-- Mol* Info Box (Bottom-Right, matching Image 4) -->
+              <div class="molstar-info-box" id="molstar-info-box">
+                <button class="molstar-close-btn" id="btn-close-molstar-box" title="Close details">×</button>
+                <div class="molstar-model-line" id="ms-model">AF-A0A1B0GTW7-F1: Chain A</div>
+                <div class="molstar-res-line" id="ms-res">A0A1B0GTW7: 222 (LEU)</div>
+                <div class="molstar-detail-line" id="ms-detail">Alpha Helix · Confident</div>
+              </div>
+            </div>
+
+            <!-- AlphaFold pLDDT Legend (Exact UniProt / AlphaFold DB Format) -->
+            <div class="plddt-legend-bar">
+              <div class="legend-title">Model Confidence:</div>
+              <div class="legend-items">
+                <div class="legend-item"><span class="color-swatch swatch-very-high"></span> Very high (pLDDT &gt; 90)</div>
+                <div class="legend-item"><span class="color-swatch swatch-confident"></span> Confident (90 &gt; pLDDT &gt; 70)</div>
+                <div class="legend-item"><span class="color-swatch swatch-low"></span> Low (70 &gt; pLDDT &gt; 50)</div>
+                <div class="legend-item"><span class="color-swatch swatch-very-low"></span> Very low (pLDDT &lt; 50)</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Dedicated Residue Details Inspector Panel -->
+          <div class="residue-inspector-panel">
+            <div class="inspector-header">Selected Residue Details (Hover or Click 3D Structure)</div>
+            <div class="inspector-grid">
+              <div class="inspector-field">
+                <div class="field-label">Residue &amp; Code</div>
+                <div class="field-value" id="insp-res">Valine (VAL)</div>
+              </div>
+              <div class="inspector-field">
+                <div class="field-label">Sequence Position</div>
+                <div class="field-value" id="insp-pos">Position 8 of 60</div>
+              </div>
+              <div class="inspector-field">
+                <div class="field-label">Secondary Structure</div>
+                <div class="field-value" id="insp-ss">Alpha Helix (H1)</div>
+              </div>
+              <div class="inspector-field">
+                <div class="field-label">pLDDT Score</div>
+                <div class="field-value" id="insp-plddt" style="color: var(--uniprot-blue);">88.5 / 100</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Interactive Sequence & Feature Track (UniProt ProtVista Style - Fits 100% Screen Width) -->
+          <div class="uniprot-card" style="margin-top: 18px;">
+            <div class="protvista-header-row">
+              <div style="display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap;">
+                <span class="card-heading" style="font-size: 16px;">Features</span>
+                <span style="font-size: 12px; color: var(--text-muted);">
+                  Showing features for <strong style="color: var(--text-dark);">binding site, active site, disulfide bond</strong>
+                </span>
+              </div>
+              <div class="protvista-zoom-btns">
+                <button class="protvista-btn" id="btn-pv-zoom-out" title="Zoom Out (−)">−</button>
+                <button class="protvista-btn" id="btn-pv-zoom-in" title="Zoom In (+)">+</button>
+                <button class="protvista-btn protvista-btn-fit" id="btn-pv-zoom-fit">Reset View</button>
+              </div>
+            </div>
+
+            <!-- 1. ProtVista Overview Mini-Ruler Track (1 to 788, perfectly fitting card width) -->
+            <div class="protvista-overview-container">
+              <div class="protvista-overview-ruler" id="pv-overview-ruler">
+                <span>1</span>
+                <span>100</span>
+                <span>200</span>
+                <span>300</span>
+                <span>400</span>
+                <span>500</span>
+                <span>600</span>
+                <span>700</span>
+                <span id="pv-overview-end">788</span>
+              </div>
+              <div class="protvista-overview-bar" id="pv-overview-bar">
+                <!-- Mini markers across full protein -->
+                <div class="pv-mini-features" id="pv-mini-features"></div>
+                <!-- Draggable / Resizable Window Brush matching Video 2 -->
+                <div class="protvista-brush-window" id="pv-brush-window">
+                  <div class="pv-brush-handle pv-handle-left" id="pv-handle-left" title="Drag to adjust window start">‹</div>
+                  <span class="pv-brush-badge" id="pv-brush-badge">300 – 329</span>
+                  <div class="pv-brush-handle pv-handle-right" id="pv-handle-right" title="Drag to adjust window end">›</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 2. ProtVista Detail Track (100% Width, Fits Card, No Page Blowout!) -->
+            <div class="protvista-detail-container" id="pv-detail-container">
+              <!-- Feature markers track row (diamonds/pills within active window) -->
+              <div class="pv-detail-track-row pv-features-row" id="pv-features-track"></div>
+
+              <!-- Secondary structure track row (helices, strands, coils within active window) -->
+              <div class="pv-detail-track-row pv-ss-row" id="pv-ss-track"></div>
+
+              <!-- Sequence Letters Row (V, T, V, H, M, etc. within active window) -->
+              <div class="pv-detail-track-row pv-seq-row" id="pv-seq-track"></div>
+            </div>
+
+            <!-- 3. UniProt Features Table (matching Video 2!) -->
+            <div class="uniprot-features-table-wrapper">
+              <table class="uniprot-features-table" id="pv-features-table">
+                <thead>
+                  <tr>
+                    <th style="width: 32px;"></th>
+                    <th style="width: 140px;">TYPE</th>
+                    <th style="width: 100px;">ID</th>
+                    <th style="width: 110px;">POSITION(S)</th>
+                    <th>DESCRIPTION</th>
+                  </tr>
+                </thead>
+                <tbody id="pv-table-body">
+                  <!-- Dynamically populated with Binding sites, Active sites, Disulfides -->
+                </tbody>
+              </table>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Right: Presets & Custom Sequence Controls -->
+        <div>
+          <div class="uniprot-card">
+            <div class="card-header-bar">
+              <span class="card-heading">Protein Presets</span>
+            </div>
+            <div class="presets-list" id="presets-container">
+              <!-- Dynamically populated from /api/presets -->
+            </div>
+          </div>
+
+          <div class="uniprot-card">
+            <div class="card-header-bar">
+              <span class="card-heading">Predict Custom Sequence</span>
+            </div>
+            <div style="margin-bottom: 12px;">
+              <label style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">1D Amino Acid Sequence</label>
+              <textarea id="seq-custom-input" rows="4" placeholder="Enter standard single-letter amino acid sequence..."></textarea>
+            </div>
+            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 16px;">
+              <input type="checkbox" id="relax-check" checked>
+              <label for="relax-check" style="font-size: 12px; cursor: pointer;">Enable Local Coordinate Relaxation</label>
+            </div>
+            <button class="btn-uniprot" style="width: 100%;" id="btn-fold-custom">
+              <span id="btn-fold-label">Fold 3D Structure</span>
+            </button>
+
+            <!-- Metrics -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 16px;">
+              <div style="background: var(--bg-page); padding: 10px; border-radius: 4px; text-align: center;">
+                <div style="font-size: 18px; font-weight: 700; color: var(--uniprot-blue);" id="stat-mean-plddt">88.2</div>
+                <div style="font-size: 11px; color: var(--text-muted);">Mean pLDDT</div>
+              </div>
+              <div style="background: var(--bg-page); padding: 10px; border-radius: 4px; text-align: center;">
+                <div style="font-size: 18px; font-weight: 700; color: #10b981;" id="stat-time">22 ms</div>
+                <div style="font-size: 11px; color: var(--text-muted);">Latency</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- TAB 2: Sequence & Features -->
+    <div id="tab-sequence" class="tab-pane">
+      <div class="uniprot-card">
+        <div class="card-header-bar">
+          <span class="card-heading">Sequence Features &amp; Annotations</span>
+        </div>
+        <p style="font-size: 13px; color: var(--text-body); line-height: 1.6; margin-bottom: 16px;">
+          The amino acid sequence below has been folded by Mini-AlphaFold. Regions with high pLDDT confidence correspond to well-packed secondary structure motifs ($\alpha$-helices and $\beta$-strands), while lower scores reflect flexible loop regions and terminal tails.
+        </p>
+        <div style="background: var(--bg-page); padding: 16px; border-radius: 6px; font-family: var(--font-mono); font-size: 13px; line-height: 1.8; word-break: break-all;" id="full-fasta-box">
+          <!-- Populated dynamically -->
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 3: Explainability & Distance Maps -->
+    <div id="tab-explain" class="tab-pane">
+      <div class="uniprot-card">
+        <div class="card-header-bar">
+          <span class="card-heading">Predicted Pairwise Distance Geometry ($D_{ij}$)</span>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 480px; gap: 24px;">
+          <div>
+            <p style="font-size: 13px; color: var(--text-body); line-height: 1.6; margin-bottom: 14px;">
+              Mini-AlphaFold's Evoformer layers compute a symmetrical $L \times L$ pairwise distance matrix. Dark blue/purple regions indicate close proximity in 3D Euclidean space ($< 8$ Å), revealing secondary structures (diagonals) and long-range tertiary domain packing.
+            </p>
+            <div style="background: var(--bg-page); padding: 14px; border-radius: 6px; font-size: 13px;">
+              <div style="margin-bottom: 6px;"><strong>Focused Residue Pair:</strong> <span id="explain-pair" style="color: var(--uniprot-blue); font-weight: 700;">Hover over heatmap</span></div>
+              <div><strong>Predicted Distance:</strong> <span id="explain-dist" style="color: var(--uniprot-blue); font-weight: 700;">-</span></div>
+            </div>
+          </div>
+          <div style="text-align: center;">
+            <canvas id="heatmap-canvas" width="460" height="460" style="border: 1px solid var(--border-light); border-radius: 6px; cursor: crosshair;"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 4: Variant & Mutation Lab -->
+    <div id="tab-mutation" class="tab-pane">
+      <div class="uniprot-card">
+        <div class="card-header-bar">
+          <span class="card-heading">In-Silico Variant &amp; Mutation Sensitivity Analyzer</span>
+        </div>
+        <div style="display: grid; grid-template-columns: 360px 1fr; gap: 24px;">
+          <div>
+            <div style="margin-bottom: 12px;">
+              <label style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Base Sequence</label>
+              <textarea id="mut-base-seq" rows="4"></textarea>
+            </div>
+            <div style="margin-bottom: 14px;">
+              <label style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Target Mutation (e.g. C22S, I7P, V8A)</label>
+              <input type="text" id="mut-code" value="C22S">
+            </div>
+            <button class="btn-uniprot" style="width: 100%;" id="btn-run-mutation">
+              <span id="btn-mut-label">Simulate Mutation Impact</span>
+            </button>
+
+            <!-- Mutation Result Metrics -->
+            <div style="margin-top: 18px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+              <div style="background: var(--bg-page); padding: 8px; border-radius: 4px; text-align: center;">
+                <div style="font-size: 16px; font-weight: 700; color: #f59e0b;" id="mut-res-rmsd">-</div>
+                <div style="font-size: 10px; color: var(--text-muted);">Global RMSD</div>
+              </div>
+              <div style="background: var(--bg-page); padding: 8px; border-radius: 4px; text-align: center;">
+                <div style="font-size: 16px; font-weight: 700; color: #ef4444;" id="mut-res-max">-</div>
+                <div style="font-size: 10px; color: var(--text-muted);">Max Shift</div>
+              </div>
+              <div style="background: var(--bg-page); padding: 8px; border-radius: 4px; text-align: center;">
+                <div style="font-size: 16px; font-weight: 700; color: var(--text-dark);" id="mut-res-lost">-</div>
+                <div style="font-size: 10px; color: var(--text-muted);">Lost Contacts</div>
+              </div>
+              <div style="background: var(--bg-page); padding: 8px; border-radius: 4px; text-align: center;">
+                <div style="font-size: 16px; font-weight: 700; color: var(--text-dark);" id="mut-res-gained">-</div>
+                <div style="font-size: 10px; color: var(--text-muted);">Gained Contacts</div>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <div style="height: 220px; margin-bottom: 16px;">
+              <canvas id="displacement-chart"></canvas>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+              <div>
+                <label style="font-size: 12px; font-weight: 700; color: var(--text-dark); display: block; margin-bottom: 6px;">Wild-Type 3D Fold</label>
+                <div class="canvas-3d-wrapper" style="height: 260px; border: 1px solid var(--border-light); border-radius: 6px;">
+                  <div id="viewport-wt"></div>
+                </div>
+              </div>
+              <div>
+                <label style="font-size: 12px; font-weight: 700; color: var(--text-dark); display: block; margin-bottom: 6px;">Mutant 3D Fold</label>
+                <div class="canvas-3d-wrapper" style="height: 260px; border: 1px solid var(--border-light); border-radius: 6px;">
+                  <div id="viewport-mut"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 5: 20 Amino Acids 3D Explorer (Requested Feature!) -->
+    <div id="tab-aminoacids" class="tab-pane">
+      <div class="uniprot-card">
+        <div class="card-header-bar" style="flex-wrap: wrap; gap: 14px;">
+          <div>
+            <span class="card-heading">The 20 Canonical Amino Acids — 3D Molecular Explorer</span>
+            <div style="font-size: 12px; color: var(--text-muted); margin-top: 3px;">
+              Interactive 3D ball-and-stick structures, sidechain conformations, hydropathy, and structural propensities.
+            </div>
+          </div>
+          <!-- Category Filters -->
+          <div class="aa-filter-group" id="aa-filter-group">
+            <button class="aa-filter-btn active" data-filter="all">All (20)</button>
+            <button class="aa-filter-btn" data-filter="Hydrophobic">Hydrophobic (8)</button>
+            <button class="aa-filter-btn" data-filter="Polar">Polar / Uncharged (7)</button>
+            <button class="aa-filter-btn" data-filter="Basic">Basic (+ charge) (3)</button>
+            <button class="aa-filter-btn" data-filter="Acidic">Acidic (− charge) (2)</button>
+          </div>
+        </div>
+
+        <!-- 20 Amino Acid Selector Chips -->
+        <div class="aa-chips-grid" id="aa-chips-grid"></div>
+
+        <!-- Selected Amino Acid Showcase (Split 3D View + Biochemical Profile) -->
+        <div class="aa-showcase-layout">
+          <!-- Left: 3D Mol* Ball-and-Stick Viewer -->
+          <div class="aa-3d-card">
+            <div class="aa-3d-header">
+              <span id="aa-3d-title" style="font-weight: 700; color: var(--text-dark);">Alanine (Ala · A) — 3D Ball &amp; Stick</span>
+              <div style="display: flex; gap: 6px;">
+                <button class="ctrl-btn active" id="btn-aa-spin">Spin</button>
+                <button class="ctrl-btn" id="btn-aa-reset">Reset</button>
+              </div>
+            </div>
+            <div class="canvas-3d-wrapper" style="height: 380px; background: #ffffff;">
+              <div id="viewport-aa"></div>
+              <!-- CPK Color Legend -->
+              <div class="aa-cpk-legend">
+                <span><span class="color-swatch" style="background: #22c55e;"></span> Carbon (C)</span>
+                <span><span class="color-swatch" style="background: #ef4444;"></span> Oxygen (O)</span>
+                <span><span class="color-swatch" style="background: #3b82f6;"></span> Nitrogen (N)</span>
+                <span><span class="color-swatch" style="background: #eab308;"></span> Sulfur (S)</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right: Comprehensive Biochemical & Structural Profile -->
+          <div class="aa-profile-card" id="aa-profile-card">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>

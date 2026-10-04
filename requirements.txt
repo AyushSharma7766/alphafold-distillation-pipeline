@@ -1,0 +1,17 @@
+torch>=2.0.0
+pytorch-lightning>=2.0.0
+numpy<2.0.0
+biopython>=1.81
+rich>=13.0.0
+scipy>=1.10.0
+pandas>=2.0.0
+fastapi>=0.100.0
+uvicorn>=0.22.0
+gradio>=3.0.0
+modelcif>=0.7
+
+# OpenFold must usually be installed from source, but it requires these core dependencies:
+ml-collections>=0.1.1
+py3Dmol>=2.0.0
+einops>=0.6.0
+deepspeed>=0.10.0 # Optional, but recommended for large distributed runs
